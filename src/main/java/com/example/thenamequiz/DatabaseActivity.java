@@ -33,6 +33,13 @@ public class DatabaseActivity extends AppCompatActivity {
         create_layout();
     }
 
+    enum SortingMethod {
+        AZ,
+        ZA
+    }
+
+    SortingMethod sorting_method = SortingMethod.AZ;
+
     static int offset = 0;
 
     @Override
@@ -45,13 +52,13 @@ public class DatabaseActivity extends AppCompatActivity {
 
     public void sorter_a_z(View v)
     {
-        Collections.sort(App.database().cards());
+        sorting_method = SortingMethod.AZ;
         create_layout();
     }
 
     public void sorter_z_a(View v)
     {
-        Collections.sort(App.database().cards(), Collections.reverseOrder());
+        sorting_method = SortingMethod.ZA;
         create_layout();
     }
 
@@ -59,14 +66,25 @@ public class DatabaseActivity extends AppCompatActivity {
     {
         final LinearLayout linear_layout_outer = findViewById(R.id.linear_layout);
 
+        Database.Card[] arr = App.database().cards().toArray(new Database.Card[App.database().cards().size()]);
+
+        switch(sorting_method)
+        {
+            case AZ:
+                Arrays.sort(arr);
+                break;
+            case ZA:
+                Arrays.sort(arr, Collections.reverseOrder());
+                break;
+        }
+
         linear_layout_outer.removeAllViews();
 
         int i = 0;
 
         int universal_id = 100;
 
-        final ArrayList<Database.Card> cards = App.database().cards();
-        for (Database.Card card : cards) {
+        for (Database.Card card : arr) {
             CardView card_view = new CardView(getBaseContext());
             card_view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             card_view.setId(universal_id++);
@@ -99,7 +117,7 @@ public class DatabaseActivity extends AppCompatActivity {
             delete_button.setPadding(20, 20, 20, 20);
             delete_button.setId(i);
             delete_button.setOnClickListener((View v) -> {
-                cards.remove(card);
+                App.database().cards().remove(card);
                 linear_layout_outer.removeView(card_view);
             });
             delete_button.setText("Delete");
