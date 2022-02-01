@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -66,13 +67,19 @@ public class AddActivity extends AppCompatActivity {
 
         try {
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-            Database.the().add_card(the_text, bitmap);
+            App.database().add_card(the_text, bitmap);
         } catch (Exception e)
         {
             return;
         }
 
-        if (should_finish_after_add)
+        if (should_finish_after_add) {
             finish();
+            return;
+        }
+
+        ImageView image_view = (ImageView) findViewById(R.id.imageView2);
+        image_view.setImageURI(Uri.EMPTY);
+        text.setText("Name");
     }
 }

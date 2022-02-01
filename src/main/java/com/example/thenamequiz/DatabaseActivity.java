@@ -2,15 +2,26 @@ package com.example.thenamequiz;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 
+import android.app.ActionBar;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class DatabaseActivity extends AppCompatActivity {
 
@@ -22,10 +33,25 @@ public class DatabaseActivity extends AppCompatActivity {
         create_layout();
     }
 
+    static int offset = 0;
+
     @Override
     public void onResume()
     {
         super.onResume();
+        offset++;
+        create_layout();
+    }
+
+    public void sorter_a_z(View v)
+    {
+        Collections.sort(App.database().cards());
+        create_layout();
+    }
+
+    public void sorter_z_a(View v)
+    {
+        Collections.sort(App.database().cards(), Collections.reverseOrder());
         create_layout();
     }
 
@@ -35,30 +61,63 @@ public class DatabaseActivity extends AppCompatActivity {
 
         linear_layout_outer.removeAllViews();
 
-        final ArrayList<Database.Card> cards = Database.the().cards();
-        cards.forEach((card) -> {
-            CardView card_view = new CardView(getBaseContext());
+        int i = 0;
 
-            LinearLayout linear_layout = new LinearLayout(getBaseContext());
-            linear_layout.setOrientation(LinearLayout.HORIZONTAL);
+        int universal_id = 100;
+
+        final ArrayList<Database.Card> cards = App.database().cards();
+        for (Database.Card card : cards) {
+            CardView card_view = new CardView(getBaseContext());
+            card_view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            card_view.setId(universal_id++);
+
+            LinearLayout horizontal_layout = new LinearLayout(this);
+            horizontal_layout.setOrientation(LinearLayout.HORIZONTAL);
+
+            card_view.addView(horizontal_layout);
 
             ImageView image_view = new ImageView(getBaseContext());
+            image_view.setId(universal_id++);
+
             final int size = 450;
             LinearLayout.LayoutParams layout_params = new LinearLayout.LayoutParams(size, size);
             image_view.setLayoutParams(layout_params);
 
             image_view.setImageBitmap(card.bitmap);
 
+            LinearLayout vertical_layout = new LinearLayout(this);
+            vertical_layout.setOrientation(LinearLayout.VERTICAL);
+            vertical_layout.setGravity(Gravity.CENTER);
+
             TextView text_view = new TextView(getBaseContext());
+            text_view.setId(universal_id++);
+            text_view.setPadding(20, 20, 20, 20);
             text_view.setText(card.name);
 
-            linear_layout.addView(image_view);
-            linear_layout.addView(text_view);
+            Button delete_button = new Button(getBaseContext());
+            delete_button.setId(universal_id++);
+            delete_button.setPadding(20, 20, 20, 20);
+            delete_button.setId(i);
+            delete_button.setOnClickListener((View v) -> {
+                cards.remove(card);
+                linear_layout_outer.removeView(card_view);
+            });
+            delete_button.setText("Delete");
+            delete_button.setBackgroundColor(Color.rgb(210,144,112));
 
-            card_view.addView(linear_layout);
+            vertical_layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT));
+
+            horizontal_layout.addView(image_view);
+            vertical_layout.addView(text_view);
+            vertical_layout.addView(delete_button);
+            horizontal_layout.addView(vertical_layout);
 
             linear_layout_outer.addView(card_view);
-        });
+
+            i++;
+        }
+
+        linear_layout_outer.invalidate();
     }
 
     public void add_entry(View view)

@@ -72,7 +72,7 @@ public class QuizActivity extends AppCompatActivity {
 
     void update_quiz_view()
     {
-        ArrayList<Database.Card> cards = Database.the().cards();
+        ArrayList<Database.Card> cards = App.database().cards();
         
         if (cards.size() < 3) {
             finish();
@@ -94,18 +94,13 @@ public class QuizActivity extends AppCompatActivity {
         button2.setText(cards.get(two).name);
         button3.setText(cards.get(three).name);
 
-        final int[] is = { one, two, three };
-
         int index = r.nextInt(3);
 
-        image_view.setImageBitmap(cards.get(is[index]).bitmap);
+        final Button[] buttons = { button1, button2, button3 };
+        final int[] is = { one, two, three };
 
-        if (index == 0)
-            correct_button = button1;
-        else if (index == 1)
-            correct_button = button2;
-        else if (index == 2)
-            correct_button = button3;
+        image_view.setImageBitmap(cards.get(is[index]).bitmap);
+        correct_button = buttons[index];
 
     }
 }
