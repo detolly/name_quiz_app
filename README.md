@@ -25,3 +25,6 @@ adb install -r app-debug.apk
 adb install -r app-debug-androidTest.apk
 adb shell am instrument -w com.android.foo/androidx.test.runner.AndroidJUnitRunner
 ```
+
+  
+Note: The database 'number of cards' test sometimes re-makes the database, which is quite annoying because that can make the test fail. Will have to look into that.
