@@ -13,7 +13,7 @@ public class App extends Application {
     {
         super.onCreate();
         s_context = this;
-        s_database = new Database();
+        s_database = new Database(s_context);
     }
 
     public static Context context() {

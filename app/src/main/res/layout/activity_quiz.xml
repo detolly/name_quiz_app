@@ -14,8 +14,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.171"
+        app:layout_constraintTop_toBottomOf="@+id/quiz_high_score"
+        app:layout_constraintVertical_bias="0.13999999"
         app:srcCompat="@mipmap/ic_launcher" />
 
     <Button
@@ -24,10 +24,13 @@
         android:layout_height="wrap_content"
         android:onClick="selected"
         android:text="Button"
+        app:iconTintMode="add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/quizbutton2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/quizimageview" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9"
+        app:strokeColor="#000000" />
 
     <Button
         android:id="@+id/quizbutton2"
@@ -38,7 +41,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/quizimageview" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9" />
 
     <Button
         android:id="@+id/quizbutton3"
@@ -49,16 +53,28 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/quizbutton2"
-        app:layout_constraintTop_toBottomOf="@+id/quizimageview" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9" />
 
     <TextView
         android:id="@+id/quiz_score"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:text="Score: 0"
         android:textSize="34sp"
-        app:layout_constraintBottom_toTopOf="@+id/quizimageview"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.01999998" />
+
+    <TextView
+        android:id="@+id/quiz_high_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="High Score: 0"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/quiz_score" />
 </androidx.constraintlayout.widget.ConstraintLayout>

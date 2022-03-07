@@ -2,15 +2,10 @@ package com.example.thenamequiz;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -66,7 +60,7 @@ public class DatabaseActivity extends AppCompatActivity {
     {
         final LinearLayout linear_layout_outer = findViewById(R.id.linear_layout);
 
-        Database.Card[] arr = App.database().cards().toArray(new Database.Card[App.database().cards().size()]);
+        Card[] arr = App.database().cards().toArray(new Card[App.database().cards().size()]);
 
         switch(sorting_method)
         {
@@ -84,7 +78,7 @@ public class DatabaseActivity extends AppCompatActivity {
 
         int universal_id = 100;
 
-        for (Database.Card card : arr) {
+        for (Card card : arr) {
             CardView card_view = new CardView(getBaseContext());
             card_view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             card_view.setId(universal_id++);
@@ -117,7 +111,7 @@ public class DatabaseActivity extends AppCompatActivity {
             delete_button.setPadding(20, 20, 20, 20);
             delete_button.setId(i);
             delete_button.setOnClickListener((View v) -> {
-                App.database().cards().remove(card);
+                App.database().remove_card(card);
                 linear_layout_outer.removeView(card_view);
             });
             delete_button.setText("Delete");

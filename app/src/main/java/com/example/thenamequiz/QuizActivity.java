@@ -1,6 +1,8 @@
 package com.example.thenamequiz;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.view.View;
@@ -18,12 +20,10 @@ public class QuizActivity extends AppCompatActivity {
     Button button3;
 
     TextView score_text;
-
+    TextView high_score_text;
     ImageView image_view;
 
-    Button correct_button;
-
-    int score = 0;
+    QuizViewModel quiz_viewmodel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,72 +35,39 @@ public class QuizActivity extends AppCompatActivity {
         button3 = findViewById(R.id.quizbutton3);
 
         score_text = findViewById(R.id.quiz_score);
+        high_score_text = findViewById(R.id.quiz_high_score);
 
         image_view = findViewById(R.id.quizimageview);
 
-        update_quiz_view();
+        quiz_viewmodel = new ViewModelProvider(this).get(QuizViewModel.class);
+        quiz_viewmodel.init();
+
+        final Observer<QuizState> observer = quizState -> {
+            score_text.setText("Score: " + quizState.current_score);
+            high_score_text.setText("High Score: " + quizState.high_score);
+            Card card1 = App.database().cards.get(quizState.id_one);
+            Card card2 = App.database().cards.get(quizState.id_two);
+            Card card3 = App.database().cards.get(quizState.id_three);
+            Card[] cards = { card1, card2, card3 };
+            button1.setText(card1.name);
+            button2.setText(card2.name);
+            button3.setText(card3.name);
+            image_view.setImageBitmap(cards[quizState.correct_index].bitmap);
+        };
+
+        quiz_viewmodel.get_quiz_state().observe(this, observer);
     }
 
     public void selected(View view)
     {
         Button clicked_button = (Button)view;
-        if (clicked_button == correct_button)
-        {
-            increase_score();
-            update_quiz_view();
-        } else {
-            stop_score();
-        }
+        int clicked_index = 0;
+        if (clicked_button == button1) clicked_index = 0;
+        else if (clicked_button == button2) clicked_index = 1;
+        else if (clicked_button == button3) clicked_index = 2;
+        else return;
+
+        quiz_viewmodel.did_click(clicked_index);
     }
 
-    void stop_score()
-    {
-        score = 0;
-        set_score_text();
-    }
-
-    void increase_score()
-    {
-        score++;
-        set_score_text();
-    }
-
-    void set_score_text()
-    {
-        score_text.setText("Score: " + score);
-    }
-
-    void update_quiz_view()
-    {
-        ArrayList<Database.Card> cards = App.database().cards();
-        
-        if (cards.size() < 3) {
-            finish();
-            return;
-        }
-
-        Random r = new Random();
-
-        int one = r.nextInt(cards.size());
-        int two = 0;
-        while((two = r.nextInt(cards.size())) == one)
-            continue;
-
-        int three = 0;
-        while((three = r.nextInt(cards.size())) == one || two == three)
-            continue;
-
-        button1.setText(cards.get(one).name);
-        button2.setText(cards.get(two).name);
-        button3.setText(cards.get(three).name);
-
-        int index = r.nextInt(3);
-
-        final Button[] buttons = { button1, button2, button3 };
-        final int[] is = { one, two, three };
-
-        image_view.setImageBitmap(cards.get(is[index]).bitmap);
-        correct_button = buttons[index];
-
-    }
 }
